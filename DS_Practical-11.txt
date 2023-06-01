@@ -1,0 +1,130 @@
+			      Assignment N0.- 11
+		
+
+
+ubuntu@ubuntu-OptiPlex-3090:~$ cd impala
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ docker network create -d bridge quickstart-network
+Error response from daemon: network with name quickstart-network already exists
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ export QUICKSTART_IP=$(docker network inspect quickstart-network -f '{{(index .IPAM.Config 0).Gateway}}')
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ export QUICKSTART_LISTEN_ADDR=$QUICKSTART_IP
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ docker network create -d bridge quickstart-network
+Error response from daemon: network with name quickstart-network already exists
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ export QUICKSTART_IP=$(docker network inspect quickstart-network -f '{{(index .IPAM.Config 0).Gateway}}')
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ export QUICKSTART_LISTEN_ADDR=$QUICKSTART_IP
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ export QUICKSTART_LISTEN_ADDR=0.0.0.0
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ export IMPALA_QUICKSTART_IMAGE_PREFIX="apache/impala:81d5377c2-"
+ubuntu@ubuntu-OptiPlex-3090:~/impala$ sudo chmod 666 /var/run/docker.sock
+[sudo] password for ubuntu: 
+ubuntu@ubuntu-OptiPlex-3090:~/impala$   docker run --network=quickstart-network -it \
+> ^C
+ubuntu@ubuntu-OptiPlex-3090:~/impala$   docker-compose -f docker/quickstart.yml up -d
+/snap/docker/2746/lib/python3.6/site-packages/paramiko/transport.py:32: CryptographyDeprecationWarning: Python 3.6 is no longer supported by the Python core team. Therefore, support for it is deprecated in cryptography. The next release of cryptography (40.0) will be the last to support Python 3.6.
+  from cryptography.hazmat.backends import default_backend
+quickstart-hive-metastore is up-to-date
+docker_statestored_1 is up-to-date
+docker_catalogd_1 is up-to-date
+docker_impalad-1_1 is up-to-date
+ubuntu@ubuntu-OptiPlex-3090:~/impala$   docker run --network=quickstart-network -it \
+>      ${IMPALA_QUICKSTART_IMAGE_PREFIX}impala_quickstart_client impala-shell
++ [[ 1 -eq 0 ]]
++ [[ impala-shell = \l\o\a\d\_\t\p\c\d\s ]]
++ [[ impala-shell = \i\m\p\a\l\a\-\s\h\e\l\l ]]
++ shift
++ exec impala-shell --protocol=hs2 --history_file=/tmp/impalahistory -i docker_impalad-1_1
+Starting Impala Shell without Kerberos authentication
+Opened TCP connection to docker_impalad-1_1:21050
+Connected to docker_impalad-1_1:21050
+Server version: impalad version 4.0.0-SNAPSHOT RELEASE (build d2253013f9aae0057a07fe045d90aca440053583)
+***********************************************************************************
+Welcome to the Impala shell.
+(Impala Shell v3.4.0-RELEASE (9f1c31c) built on Fri Apr 24 14:10:19 PDT 2020)
+
+Want to know what version of Impala you're connected to? Run the VERSION command to
+find out!
+***********************************************************************************
+[docker_impalad-1_1:21050] default> create database Anchal;
+Query: create database Anchal
++----------------------------+
+| summary                    |
++----------------------------+
+| Database has been created. |
++----------------------------+
+Fetched 1 row(s) in 0.09s
+[docker_impalad-1_1:21050] default> show databases;
+Query: show databases
++------------------+----------------------------------------------+
+| name             | comment                                      |
++------------------+----------------------------------------------+
+| _impala_builtins | System database for Impala builtin functions |
+| db               |                                              |
+| db1              |                                              |
+| default          | Default Hive database                        |
+| Anchal           |                                              |
++------------------+----------------------------------------------+
+Fetched 5 row(s) in 0.01s
+[docker_impalad-1_1:21050] default> create table student(RollNo int,Name string,Subject string,Marks int);
+Query: create table student(RollNo int,Name string,Subject string,Marks int)
++-------------------------+
+| summary                 |
++-------------------------+
+| Table has been created. |
++-------------------------+
+Fetched 1 row(s) in 0.11s
+[docker_impalad-1_1:21050] default> show tables;
+Query: show tables
++---------+
+| name    |
++---------+
+| student |
++---------+
+Fetched 1 row(s) in 0.01s
+[docker_impalad-1_1:21050] default> insert into student values(1,"Anchal","DS",82);
+Query: insert into student values(1,"Anchal","DS",82)
+Query submitted at: 2023-05-17 05:00:39 (Coordinator: http://172.18.0.5:25000)
+Query progress can be monitored at: http://172.18.0.5:25000/query_plan?query_id=b245aa65229077cd:4c48fbc500000000
+Modified 1 row(s) in 0.18s
+[docker_impalad-1_1:21050] default> insert into student values(2,"Dakshta","CS",88);
+Query: insert into student values(2,"Dakshta","CS",88)
+Query submitted at: 2023-05-17 05:01:04 (Coordinator: http://172.18.0.5:25000)
+Query progress can be monitored at: http://172.18.0.5:25000/query_plan?query_id=104775c32300cf4d:8fdfa37b00000000
+Modified 1 row(s) in 0.21s
+[docker_impalad-1_1:21050] default> insert into student values(3,"Aditi","NLP",75);
+Query: insert into student values(3,"Aditi","NLP",75)
+Query submitted at: 2023-05-17 05:01:33 (Coordinator: http://172.18.0.5:25000)
+Query progress can be monitored at: http://172.18.0.5:25000/query_plan?query_id=ce494aed7a68c401:20a5be2e00000000
+Modified 1 row(s) in 0.21s
+[docker_impalad-1_1:21050] default> insert into student values(4,"Pratiksha","ANN",55);
+Query: insert into student values(4,"Pratiksha","ANN",55)
+Query submitted at: 2023-05-17 05:02:12 (Coordinator: http://172.18.0.5:25000)
+Query progress can be monitored at: http://172.18.0.5:25000/query_plan?query_id=b243f52be43c3128:da71ffbf00000000
+Modified 1 row(s) in 0.20s
+[docker_impalad-1_1:21050] default> insert into student values(5,"Arati","CS",35);
+Query: insert into student values(5,"Arati","CS",35)
+Query submitted at: 2023-05-17 05:02:43 (Coordinator: http://172.18.0.5:25000)
+Query progress can be monitored at: http://172.18.0.5:25000/query_plan?query_id=9745c08221b06df4:b63387f700000000
+Modified 1 row(s) in 0.15s
+[docker_impalad-1_1:21050] default> select * from student;
+Query: select * from student
+Query submitted at: 2023-05-17 05:02:56 (Coordinator: http://172.18.0.5:25000)
+Query progress can be monitored at: http://172.18.0.5:25000/query_plan?query_id=f5451fcabe4a9505:2938f12a00000000
++--------+----------+---------+-------+
+| rollno | name     | subject | marks |
++--------+----------+---------+-------+
+| 1      | Anchal   | DS      | 82    |
+| 2      | Dakshta  | Cs      | 88    |
+| 3      | Aditi    |   NLP   | 75    |
+| 4      | Pratiksha| ANN     | 55    |
+| 5      | Arati    | CS      | 35    |
++--------+----------+---------+-------+
+Fetched 5 row(s) in 0.12s
+[docker_impalad-1_1:21050] default> ^C
+[docker_impalad-1_1:21050] default> 
+
+
+
+
+
+
+
+
+
